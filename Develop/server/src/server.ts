@@ -4,7 +4,8 @@ import db from "./config/connection.js";
 import routes from "./routes/index.js";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-import { typeDefs, resolvers } from "./schemas/index.js";
+import { typeDefs, resolvers } from "./schemas";
+import { getUserFromToken } from "./services/auth";
 
 const app = express();
 const server = new ApolloServer({
@@ -31,17 +32,20 @@ app.use(routes);
 async function startApolloServer() {
   await server.start();
 
-  app.use('/graphql', expressMiddleware(server, {
-    context: async ({ req }) => {
-      const token = req.headers.authorization || '';
-      const user = await getUserFromToken(token); // (we’ll create this next)
-      return { user };
-    }
-  }));
+  app.use(
+    "/graphql",
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const token = req.headers.authorization || "";
+        const user = await getUserFromToken(token); // (we’ll create this next)
+        return { user };
+      },
+    })
+  );
 
   app.use(routes);
 
-  db.once('open', () => {
+  db.once("open", () => {
     app.listen(PORT, () => {
       console.log(`🌍 Server running on http://localhost:${PORT}`);
       console.log(`🚀 GraphQL ready at http://localhost:${PORT}/graphql`);

@@ -49,7 +49,7 @@ export const getUserFromToken = async (token: string) => {
 
     // Strip "Bearer " if present
     const realToken = token.split(" ").pop()?.trim();
-    const user = jwt.verify(realToken, secretKey) as JwtPayload;
+    const user = jwt.verify(realToken!, secretKey) as unknown as JwtPayload;
     return user;
   } catch (err) {
     console.error("Token error:", err);
