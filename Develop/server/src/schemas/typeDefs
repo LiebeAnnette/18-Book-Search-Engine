@@ -1,0 +1,12 @@
+// FROM LESSON FOR PLACEHOLDER
+const typeDefs = `
+  type Profile {
+    _id: ID
+    name: String
+    email: String
+    password: String
+    skills: [String]!
+  }
+`;
+
+export default typeDefs;

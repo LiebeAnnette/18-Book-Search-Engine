@@ -9,19 +9,18 @@ import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 
 // Import the two parts of a GraphQL schema
-import { typeDefs, resolvers } from "./schemas/index.js";
+import { typeDefs, resolvers } from "././schemas/index.js";
 
 const server = new ApolloServer({
   typeDefs,
   resolvers,
 });
 const startApolloServer = async () => {
+  await server.start();
+  await db();
+
   const app = express();
   const PORT = process.env.PORT || 3001;
-
-  // await db();
-
-  await server.start();
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -37,8 +36,9 @@ const startApolloServer = async () => {
     });
   }
 
-  // app.use(routes);
-  db.on("error", console.error.bind(console, "MongoDB connection error:"));
+  // app.use(routes); [from starter code]
+
+  // db.on("error", console.error.bind(console, "MongoDB connection error:"));
 
   app.listen(PORT, () => {
     console.log(`🌍 Now listening at http://localhost:${PORT}`);
