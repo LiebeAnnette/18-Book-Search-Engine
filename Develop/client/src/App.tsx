@@ -1,25 +1,9 @@
-import "./App.css";
-// ------ from lesson23 -------
-import {
-  ApolloClient,
-  InMemoryCache,
-  ApolloProvider,
-  createHttpLink,
-} from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-// ------------
-
-import { Outlet } from "react-router-dom";
-
-import Navbar from "./components/Navbar";
-
-// -----from lesson23 ----
-const httpLink = createHttpLink({
-  uri: "/graphql",
-});
-// ------------
-
 // ------STARTER CODE---------
+// import './App.css';
+// import { Outlet } from 'react-router-dom';
+
+// import Navbar from './components/Navbar';
+
 // function App() {
 //   return (
 //     <>
@@ -28,21 +12,28 @@ const httpLink = createHttpLink({
 //     </>
 //   );
 // }
+
+// export default App;
 // ---------------
 
-// -------modified from lesson23-------
+import "./App.css";
+import { Outlet } from "react-router-dom";
+import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+
+import Navbar from "./components/Navbar";
+
+const client = new ApolloClient({
+  uri: "/graphql",
+  cache: new InMemoryCache(),
+});
+
 function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="flex-column justify-flex-start min-100-vh">
-        <Navbar />
-        <div className="container">
-          <Outlet />
-        </div>
-      </div>
+      <Navbar />
+      <Outlet />
     </ApolloProvider>
   );
 }
-// ---------------
 
 export default App;
