@@ -3,9 +3,7 @@
 // import type { Request, Response, NextFunction } from 'express';
 
 import { GraphQLError } from "graphql";
-
 import jwt from "jsonwebtoken";
-
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -22,12 +20,12 @@ export const authenticateToken = ({ req }: { req: any }) => {
     token = token.split(" ").pop().trim();
   }
 
-  if (!token) {
-    return req;
-  }
+  if (!token) return req;
 
   try {
-    const secretKey = process.env.JWT_SECRET_KEY || "";
+    const secretKey = process.env.JWT_SECRET_KEY;
+    if (!secretKey) throw new Error("JWT_SECRET_KEY is not set in environment variables.");
+
     const { data } = jwt.verify(token, secretKey, { maxAge: "2h" }) as {
       data: JwtPayload;
     };
@@ -42,11 +40,10 @@ export const authenticateToken = ({ req }: { req: any }) => {
 
 export const signToken = (username: string, email: string, _id: unknown) => {
   const payload = { username, email, _id };
-  const secretKey = process.env.JWT_SECRET_KEY || "";
+  const secretKey = process.env.JWT_SECRET_KEY;
+  if (!secretKey) throw new Error("JWT_SECRET_KEY is not set in environment variables.");
 
   return jwt.sign({ data: payload }, secretKey, { expiresIn: "1h" });
-
-  // return jwt.sign(payload, secretKey, { expiresIn: '1h' });
 };
 
 export class AuthenticationError extends GraphQLError {
