@@ -24,7 +24,8 @@ export const authenticateToken = ({ req }: { req: any }) => {
 
   try {
     const secretKey = process.env.JWT_SECRET_KEY;
-    if (!secretKey) throw new Error("JWT_SECRET_KEY is not set in environment variables.");
+    if (!secretKey)
+      throw new Error("JWT_SECRET_KEY is not set in environment variables.");
 
     const { data } = jwt.verify(token, secretKey, { maxAge: "2h" }) as {
       data: JwtPayload;
@@ -41,7 +42,8 @@ export const authenticateToken = ({ req }: { req: any }) => {
 export const signToken = (username: string, email: string, _id: unknown) => {
   const payload = { username, email, _id };
   const secretKey = process.env.JWT_SECRET_KEY;
-  if (!secretKey) throw new Error("JWT_SECRET_KEY is not set in environment variables.");
+  if (!secretKey)
+    throw new Error("JWT_SECRET_KEY is not set in environment variables.");
 
   return jwt.sign({ data: payload }, secretKey, { expiresIn: "1h" });
 };
