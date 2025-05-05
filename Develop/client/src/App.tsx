@@ -18,12 +18,34 @@
 
 import "./App.css";
 import { Outlet } from "react-router-dom";
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import Navbar from "./components/Navbar";
 
+// Link to your backend server (proxied in dev)
+const httpLink = createHttpLink({
+  uri: "/graphql", // Proxies to http://localhost:3001/graphql via vite.config.ts
+});
+
+// Attach the JWT token to each request
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("id_token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
+// Apollo Client setup
 const client = new ApolloClient({
-  uri: "/graphql",
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 

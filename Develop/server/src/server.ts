@@ -11,6 +11,10 @@ import { authenticateToken } from "./services/auth.js";
 
 // Import the two parts of a GraphQL schema
 import { typeDefs, resolvers } from "././schemas/index.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const server = new ApolloServer({
   typeDefs,
